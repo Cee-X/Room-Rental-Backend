@@ -12,7 +12,7 @@ export const createBooking = async (req: AuthenticateRequest, res: Response) => 
         const roomDetails = await Room.findById(room);
         if(!roomDetails) return res.status(404).json({message: 'Room not found'})
         const totalPrice = roomDetails.price
-        const booking = new Booking({room,user,startDate, endDate, totalPrice})
+        const booking = new Booking({room,user,startDate, endDate, totalPrice, isActive: true})
         await booking.save();
         res.status(201).json({message: 'Booking created successfully'})
     }catch(error){

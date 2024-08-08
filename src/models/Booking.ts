@@ -7,6 +7,7 @@ interface IBooking extends Document {
     startDate: Date;
     endDate: Date;
     totalPrice: number;  
+    isActive: boolean;
 }
 
 const BookingSchema = new Schema<IBooking>({
@@ -14,7 +15,8 @@ const BookingSchema = new Schema<IBooking>({
     user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     startDate: {type: Date, required: true},
     endDate: {type: Date, required: true},
-    totalPrice: {type: Number, required: true}
+    totalPrice: {type: Number, required: true},
+    isActive: {type: Boolean, default: false}
 })
 
 export const Booking = model<IBooking>('Booking', BookingSchema);

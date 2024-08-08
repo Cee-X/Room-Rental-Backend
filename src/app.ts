@@ -7,6 +7,7 @@ import authRoute from './routes/auth';
 import roomRoute from './routes/room'
 import bookingRoute from './routes/booking';
 import userRoute from './routes/user';
+import dashbordRoute from './routes/dashboard';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger';
 const app = express();
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/room', roomRoute);
 app.use('/api/booking', bookingRoute);
 app.use('/api/user', userRoute);
+app.use('/api/dashboard', dashbordRoute);
 
 
 // Connect to MongoDB
