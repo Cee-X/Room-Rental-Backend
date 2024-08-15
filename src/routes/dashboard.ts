@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { getDashboardData } from "../controller/dashboardController";
+import { getDashboardData, fetchFilteredRooms, fetchRoomsPages } from "../controller/dashboardController";
 import { authenticate,isAdmin } from "../middleware/authMiddleware";
 
 
@@ -43,4 +43,7 @@ router.get('/', authenticate, isAdmin, getDashboardData);
  *       500:
  *         description: Internal server error
  */
+
+router.get('/rooms',fetchFilteredRooms);
+router.get('/rooms/pages', fetchRoomsPages);
 export default router;

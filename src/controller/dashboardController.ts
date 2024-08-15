@@ -121,3 +121,61 @@ export const getDashboardData = async (req: Request, res: Response) => {
         res.json({message: `Error ${error}`})
     }
 }
+const ITEMS_PER_PAGE = 6;
+export const fetchFilteredRooms = async (req: Request, res: Response) => {
+    const { query, currentPage } = req.query;
+    const page = parseInt(currentPage as string) || 1;
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+    try{
+        const searchCriteria : any = {
+            $or: [
+                {title: {$regex: query as string, $options: 'i'}},
+                {location: {$regex: query as string, $options: 'i'}},
+                {roomNumber: {$regex: query as string, $options: 'i'}},
+                {status: {$regex: query as string, $options: 'i'}},
+            ]
+        };
+        if(!isNaN(Number(query))){
+            searchCriteria.$or.push(
+                {price: Number(query)},
+                {rating: Number(query)}
+            )
+
+        }
+
+        const rooms = await Room.find(searchCriteria)
+        .skip(offset)
+        .limit(ITEMS_PER_PAGE)
+        .exec();
+        res.status(200).json(rooms);
+    }catch(error){
+        console.error('Database error', error);
+        res.status(500).json({message: 'Failed to fetch rooms'});
+    }
+}
+
+export const fetchRoomsPages = async (req: Request, res: Response) => {
+    const { query } = req.query;
+    try{
+        const searchCriteria : any = {
+            $or: [
+                {title: {$regex: query as string, $options: 'i'}},
+                {location: {$regex: query as string, $options: 'i'}},
+                {roomNumber: {$regex: query as string, $options: 'i'}},
+                {status: {$regex: query as string, $options: 'i'}},
+            ]
+        };
+        if(!isNaN(Number(query))){
+            searchCriteria.$or.push(
+                {price: Number(query)},
+                {rating: Number(query)}
+            )
+        }
+        const totalRooms = await Room.countDocuments(searchCriteria);
+        const pages = Math.ceil(totalRooms / ITEMS_PER_PAGE);
+        res.status(200).json(pages);
+    }catch(error){
+        console.error('Database error', error);
+        res.status(500).json({message: 'Failed to fetch rooms'});
+    }
+}

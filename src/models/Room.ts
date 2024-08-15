@@ -3,6 +3,7 @@ import { model, Schema, Document} from 'mongoose';
 
 interface IRoom extends Document {
     title: string;
+    roomNumber: string;
     description : string;
     price : number;
     capacity : number;
@@ -12,12 +13,14 @@ interface IRoom extends Document {
     images : string[];
     amenities : string[];
     rating : number;
-    isTopOffer : boolean
+    isTopOffer : boolean;
+    status : 'available' | 'booked';
 }
 
 
 const RoomSchema = new Schema<IRoom>({
     title: { type: String, required: true },
+    roomNumber: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
     capacity: { type: Number, required: true },
@@ -27,7 +30,8 @@ const RoomSchema = new Schema<IRoom>({
     images: { type: [String], required: true },
     amenities: { type: [String], required: true },
     rating: { type: Number, default: 0},
-    isTopOffer: {type: Boolean, default: false}
+    isTopOffer: {type: Boolean, default: false},
+    status : {type: String, enum: ['available', 'booked'], default: 'available'}
 })
 
 export const Room = model<IRoom>('Room', RoomSchema);
