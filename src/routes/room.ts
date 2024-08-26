@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createRoom, getRooms, getRoomById, updateRoom, deleteRoom, getTopOfferRooms, searchRooms} from '../controller/roomsController';
+import { createRoom, getRooms, getRoomById, updateRoom, deleteRoom, getTopOfferRooms} from '../controller/roomsController';
 import { authenticate, isAdmin } from "../middleware/authMiddleware";
 import { upload, uploadToGCS } from "../middleware/upload";
 const router = Router();
@@ -121,56 +121,7 @@ router.get('/', getRooms);
  */
 router.get('/topOffers', getTopOfferRooms)
 
-/**
- * @swagger
- * /api/room/search:
- *   get:
- *     summary: Search rooms
- *     description: This endpoint allows for searching rooms based on various filters such as price range, location, and sorting options.
- *     tags:
- *       - Rooms
- *     parameters:
- *       - in: query
- *         name: priceMin
- *         schema:
- *           type: number
- *         description: Minimum price filter
- *       - in: query
- *         name: priceMax
- *         schema:
- *           type: number
- *         description: Maximum price filter
- *       - in: query
- *         name: location
- *         schema:
- *           type: string
- *         description: Location filter
- *       - in: query
- *         name: sort
- *         schema:
- *           type: string
- *         description: Sorting option
- *     responses:
- *       200:
- *         description: A list of rooms matching the search criteria
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: './src/models/Room'
- *       500:
- *         description: Error occurred
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: Error searching rooms
- */
-router.get('/search', searchRooms)
+
 
 /**
  * @swagger

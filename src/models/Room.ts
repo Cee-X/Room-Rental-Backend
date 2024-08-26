@@ -3,6 +3,7 @@ import { model, Schema, Document} from 'mongoose';
 
 interface IRoom extends Document {
     title: string;
+    roomType: string;
     roomNumber: string;
     description : string;
     price : number;
@@ -10,6 +11,7 @@ interface IRoom extends Document {
     size : number;
     pets : boolean;
     location : string;
+    address : string;
     images : string[];
     amenities : string[];
     rating : number;
@@ -20,6 +22,7 @@ interface IRoom extends Document {
 
 const RoomSchema = new Schema<IRoom>({
     title: { type: String, required: true },
+    roomType: { type: String, required: true },
     roomNumber: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
@@ -27,6 +30,7 @@ const RoomSchema = new Schema<IRoom>({
     size: { type: Number, required: true },
     pets: { type: Boolean, required: true },
     location: { type: String, required: true },
+    address: { type: String, required: true },
     images: { type: [String], required: true },
     amenities: { type: [String], required: true },
     rating: { type: Number, default: 0},

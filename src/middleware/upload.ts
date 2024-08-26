@@ -64,10 +64,10 @@ export const uploadToGCS = async (req: Request, res: Response, next: NextFunctio
 
 
 export const uploadProfilePicToGCS = async (req: Request, res: Response, next: NextFunction) => {
+    
     if(!req.file){
         return next();
     }
-         
     const file = req.file as Express.Multer.File;
     console.log(file)
     const blob = bucket.file(`${Date.now()}_${file.originalname}`);

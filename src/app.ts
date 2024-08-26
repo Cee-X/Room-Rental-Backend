@@ -8,13 +8,13 @@ import roomRoute from './routes/room'
 import bookingRoute from './routes/booking';
 import userRoute from './routes/user';
 import dashbordRoute from './routes/dashboard';
+import emailRoute from './routes/email';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger';
 const app = express();
 //middlewares
 app.use(cors());
 app.use(express.json());
-
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -24,6 +24,7 @@ app.use('/api/room', roomRoute);
 app.use('/api/booking', bookingRoute);
 app.use('/api/user', userRoute);
 app.use('/api/dashboard', dashbordRoute);
+app.use('/api/email', emailRoute);
 
 
 // Connect to MongoDB

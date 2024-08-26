@@ -2,9 +2,6 @@ import { Request , Response } from 'express';
 import { Room } from '../models/Room';
 
 
-
-
-
 export const createRoom = async (req: Request, res: Response) => {
     try{
         const images = (req.files as Express.Multer.File[]).map((file: any) => {
@@ -22,16 +19,53 @@ export const createRoom = async (req: Request, res: Response) => {
         res.json({message: `Error ${error}`})
     }
 }
-
-
+const ITEMS_PER_PAGE = 6;
 export const getRooms = async (req: Request, res: Response) => {
     try{
-        const rooms = await Room.find();
-        res.json(rooms)
+        const {priceMin, priceMax, keyword, sort} = req.query
+        const currentPage = req.query.page
+        const page = parseInt(currentPage as string) || 1;
+        const offset = (page - 1) * ITEMS_PER_PAGE;
+        const filters : any = {}
+        if(priceMin || priceMax){
+            filters.price = {}
+            if(priceMin) filters.price.$gte = Number(priceMin) 
+            if(priceMax) filters.price.$lte = Number(priceMax)
+        }
+        
+        if(keyword){
+            filters.$or = [
+                {title: {$regex: keyword as string, $options: 'i'}},
+                {location: {$regex: keyword as string, $options: 'i'}}
+           
+            ]
+        }
+        
+        const sortOption: any = {}
+        if(sort) {
+            const [field, order] = (sort as string).split(':')
+            sortOption[field] = order === 'asc' ? 1 : -1;
+        }
+
+       
+        const rooms = await Room.find(filters)
+        .sort(sortOption)
+        .skip(offset)
+        .limit(ITEMS_PER_PAGE)
+        .exec();
+
+       
+       
+        if(rooms.length === 0) return res.json({message: 'No rooms found'})
+        const totalRooms = await Room.countDocuments(filters)
+        const totalPages = Math.ceil(totalRooms / ITEMS_PER_PAGE)
+        res.json({rooms, totalPages})
     }catch(error){
         res.json({message: `Error ${error}`})
     }
 }
+
+
 
 
 export const getRoomById = async (req: Request, res: Response) => {
@@ -81,30 +115,3 @@ export const getTopOfferRooms = async( req: Request, res: Response) => {
 
 
 
-export const searchRooms = async (req: Request, res: Response)  => {
-    try{
-        const {priceMin, priceMax, location, sort } = req.query
-        const filters : any = {}
-        if(priceMin || priceMax){
-            filters.price = {}
-            if(priceMin) filters.price.$gte = Number(priceMin) 
-            if(priceMax) filters.price.$lte = Number(priceMax)
-        }
-        if(location){
-            filters.location = {$regex: location, $options: 'i'}
-        }
-        
-        const sortOption: any = {}
-        if(sort) {
-            const [field, order] = (sort as string).split(':')
-            sortOption[field] = order === 'asc' ? 1 : -1;
-        }
-        
-        const rooms = await Room.find(filters).sort(sortOption);
-        if(!rooms) return res.json({message: 'No rooms found'})
-        res.json(rooms)
-
-    }catch(error){
-        res.json({error: error})
-    }
-} 

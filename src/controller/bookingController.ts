@@ -9,6 +9,8 @@ export const createBooking = async (req: AuthenticateRequest, res: Response) => 
         if( new Date(startDate) >= new Date(endDate)) return res.status(400).json({message: 'End date must be after start date'})
         const roomDetails = await Room.findById(room);
         if(!roomDetails) return res.status(404).json({message: 'Room not found'})
+       const bookingExists = await Booking.findOne({room, startDate: {$lte: endDate}, endDate: {$gte: startDate}})
+        
         if( roomDetails.status === 'booked') return res.status(400).json({message: 'Room is already booked, please select another room'})
         const totalPrice = roomDetails.price
         const booking = new Booking({room,user,startDate, endDate, totalPrice, isActive: true})

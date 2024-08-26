@@ -121,11 +121,11 @@ export const getDashboardData = async (req: Request, res: Response) => {
         res.json({message: `Error ${error}`})
     }
 }
+
 const ITEMS_PER_PAGE = 6;
 export const fetchFilteredRooms = async (req: Request, res: Response) => {
-    const { query, currentPage } = req.query;
-    const page = parseInt(currentPage as string) || 1;
-    const offset = (page - 1) * ITEMS_PER_PAGE;
+    const { query, page } = req.query
+    const offset = (Number(page) - 1) * ITEMS_PER_PAGE;
     try{
         const searchCriteria : any = {
             $or: [
@@ -142,7 +142,6 @@ export const fetchFilteredRooms = async (req: Request, res: Response) => {
             )
 
         }
-
         const rooms = await Room.find(searchCriteria)
         .skip(offset)
         .limit(ITEMS_PER_PAGE)
